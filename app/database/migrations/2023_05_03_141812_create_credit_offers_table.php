@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('code_offer');
             $table->integer('qnt_parcels_min');
             $table->integer('qnt_parcels_max');
-            $table->float('value_min');
-            $table->float('value_max');
+            $table->string('value_min');
+            $table->string('value_max');
             $table->decimal('value_fees_month', 5, 4);
             $table->timestamps();
         });
