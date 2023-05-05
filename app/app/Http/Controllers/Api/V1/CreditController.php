@@ -3,62 +3,40 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\V1\CreditRequest;
+use App\Services\CreditOfferService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CreditController extends Controller
 {
+    private $creditOfferService;
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * This is a constructor function that injects a CreditOfferService object into the class.
+     * 
+     * @param CreditOfferService creditOfferService The parameter `` is an instance of
+     * the `CreditOfferService` class, which is likely a service or repository class responsible for
+     * handling credit offers in the application. The `__construct` method is using dependency injection to
+     * inject an instance of this class into the current class, allowing it
      */
-    public function index()
+    public function __construct(CreditOfferService $creditOfferService)
     {
-        //
+        $this->creditOfferService = $creditOfferService;
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * This function returns an anonymous resource collection for a credit offer request handled by a
+     * credit offer service.
+     * 
+     * @param CreditRequest request  is an instance of the CreditRequest class, which is being
+     * passed as an argument to the creditOffer method. The method is using this request object to call
+     * the handle method of the creditOfferService object. The handle method is responsible for
+     * processing the credit request and returning an anonymous resource collection.
+     * 
+     * @return AnonymousResourceCollection An AnonymousResourceCollection is being returned.
      */
-    public function store(Request $request)
+    public function creditOffer(CreditRequest $request): AnonymousResourceCollection
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return $this->creditOfferService->handle($request);
     }
 }
