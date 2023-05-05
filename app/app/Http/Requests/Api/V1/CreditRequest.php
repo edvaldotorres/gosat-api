@@ -24,7 +24,7 @@ class CreditRequest extends FormRequest
     public function rules()
     {
         return [
-            'cpf' => 'required',
+            'cpf' => 'required|max:11|min:11',
             'value' => 'required|numeric',
             'parcel' => 'required|numeric'
         ];
