@@ -28,7 +28,7 @@ class GosatApiClient implements GosatApiClientInterface
      * @return array an array containing the credit offer information for a given CPF (Brazilian
      * individual taxpayer registry identification number) from an institution's API.
      */
-    public function getInstitutionCreditOffer(string $cpf): array
+    public function getInstitutionCreditOffer(string $cpf): array|string
     {
         $response = Http::post($this->baseUrl . 'credito', [
             'cpf' => $cpf
@@ -55,7 +55,7 @@ class GosatApiClient implements GosatApiClientInterface
      * identification), institution ID, and code of the credit modality. The response is expected to be
      * in JSON format.
      */
-    public function getDetailsCreditOffer(string $cpf, int $institution_id, string $code): array
+    public function getDetailsCreditOffer(string $cpf, int $institution_id, string $code): array|string
     {
         $response = Http::post($this->baseUrl . 'oferta', [
             'cpf' => $cpf,

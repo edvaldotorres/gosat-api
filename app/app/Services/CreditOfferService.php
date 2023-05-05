@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\Api\V1\CreditResource;
 use App\Repositories\CreditOfferRepository;
 use App\Services\Gosat\GosatApiClient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 
 class CreditOfferService
 {
@@ -41,9 +41,13 @@ class CreditOfferService
      * @return AnonymousResourceCollection An AnonymousResourceCollection of CreditResource objects is
      * being returned.
      */
-    public function handle(Request $request): AnonymousResourceCollection
+    public function handle(Request $request): Collection|string
     {
         $getApiInstitutionCreditOffer = $this->gosatApiClient->getInstitutionCreditOffer($request->cpf);
+
+        if ($getApiInstitutionCreditOffer == 'CPF não encontrado.') {
+            return $getApiInstitutionCreditOffer;
+        }
 
         foreach ($getApiInstitutionCreditOffer['instituicoes'] as $institution) {
 
@@ -70,7 +74,6 @@ class CreditOfferService
             }
         }
 
-        $bestCreditDeals = $this->creditOfferRepository->creditOffercalculation($request);
-        return CreditResource::collection($bestCreditDeals);
+        return $this->creditOfferRepository->creditOffercalculation($request);
     }
 }

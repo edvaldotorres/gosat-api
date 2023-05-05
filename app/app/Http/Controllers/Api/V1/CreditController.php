@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreditRequest;
+use App\Http\Resources\Api\V1\CreditResource;
 use App\Services\CreditOfferService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class CreditController extends Controller
 {
@@ -35,8 +38,16 @@ class CreditController extends Controller
      * 
      * @return AnonymousResourceCollection An AnonymousResourceCollection is being returned.
      */
-    public function creditOffer(CreditRequest $request): AnonymousResourceCollection
+    public function creditOffer(CreditRequest $request): AnonymousResourceCollection|JsonResponse
     {
-        return $this->creditOfferService->handle($request);
+        $bestCreditDeals = $this->creditOfferService->handle($request);
+
+        if (is_string($bestCreditDeals)) {
+            return response()->json([
+                'message' => 'Internal server error.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return CreditResource::collection($bestCreditDeals);
     }
 }
