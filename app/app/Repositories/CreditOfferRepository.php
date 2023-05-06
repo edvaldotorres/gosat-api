@@ -45,12 +45,37 @@ class CreditOfferRepository extends AbstractRepository
     {
         return self::loadModel()::query()
             ->where('cpf_client', $request->cpf)
-            ->where('value_min', '<=', $request->get('value'))
-            ->where('value_max', '>=', $request->get('value'))
-            ->where('qnt_parcels_min', '<=', $request->get('parcel'))
-            ->where('qnt_parcels_max', '>=', $request->get('parcel'))
+            ->where('value_min', '<=', (int)$request->get('value'))
+            ->where('value_max', '>=', (int)$request->get('value'))
+            ->where('qnt_parcels_min', '<=', (int)$request->get('parcel'))
+            ->where('qnt_parcels_max', '>=', (int)$request->get('parcel'))
             ->orderBy('value_fees_month', 'asc')
             ->limit(3)
             ->get();
+    }
+
+    /**
+     * This PHP function returns an array of the total number of offers grouped by their name.
+     * 
+     * @return array An array containing the name of each offer category and the total number of offers in
+     * each category.
+     */
+    public static function totalOfferscategory(): array
+    {
+        $offers = self::loadModel()::query()
+            ->selectRaw('name_offer, count(*) as total')
+            ->groupBy('name_offer')
+            ->get();
+
+        $result = [];
+
+        foreach ($offers as $offer) {
+            $result[] = [
+                'name_offer' => $offer->name_offer,
+                'total' => $offer->total,
+            ];
+        }
+
+        return $result;
     }
 }
